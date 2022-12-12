@@ -7,12 +7,11 @@ import Review from './src/models/Review.model.js';
 import Stock from './src/models/Stock.model.js';
 import { Product_Order } from './src/models/Associations.model.js';
 import sequelize from './src/db.js';
-import { Server } from 'socket.io';
 import {
   user as userInitialData,
   products as productInitialData,
 } from './data/data.js';
-import { server, socketEvents } from './src/socket/Socket.js';
+import { api, server, socketEvents } from './src/socket/Socket.js';
 import axios from 'axios';
 import productsFeaturesSetter from './data/dataFeatures.js';
 
@@ -23,7 +22,7 @@ async function DB_StartingData() {
     const users = await User.findAll();
     if (users.length === 0) {
       userInitialData.forEach(async (user) => {
-        await axios.post('http://localhost:3001/api/user/', user);
+        await axios.post(`${api}/api/user/`, user);
       });
       console.log('initial users created successfully');
     }
@@ -33,7 +32,7 @@ async function DB_StartingData() {
       const productInitialDataWithFeatures =
         productsFeaturesSetter(productInitialData);
       productInitialDataWithFeatures.forEach(async (product) => {
-        await axios.post('http://localhost:3001/api/product/', product);
+        await axios.post(`${api}/api/product/`, product);
       });
       console.log('initial products created successfully');
     }
